@@ -70,8 +70,8 @@ import UIKit
         }
     }
     
-    private let borderThickness: (active: CGFloat, inactive: CGFloat) = (active: 2, inactive: 0.5)
-    private let placeholderInsets = CGPoint(x: 0, y: 6)
+    private let borderThickness: (active: CGFloat, inactive: CGFloat) = (active: 0.5, inactive: 0.5)
+    private let placeholderInsets = CGPoint(x: 0, y: 10)
     private let textFieldInsets = CGPoint(x: 0, y: 12)
     private let inactiveBorderLayer = CALayer()
     private let activeBorderLayer = CALayer()    
@@ -113,10 +113,10 @@ import UIKit
     
     override public func animateViewsForTextDisplay() {
         if text!.isEmpty {
-            UIView.animateWithDuration(0.35, delay: 0.0, usingSpringWithDamping: 0.8, initialSpringVelocity: 2.0, options: UIViewAnimationOptions.BeginFromCurrentState, animations: ({
+            UIView.animateWithDuration(0.35, delay: 0.0, usingSpringWithDamping: 0.8, initialSpringVelocity: 2.0, options: UIViewAnimationOptions.BeginFromCurrentState, animations: ({ [unowned self] in
                 self.layoutPlaceholderInTextRect()
                 self.placeholderLabel.alpha = 1
-            }), completion: nil)
+                }), completion: nil)
             
             self.activeBorderLayer.frame = self.rectForBorder(self.borderThickness.active, isFilled: false)
         }
@@ -144,7 +144,8 @@ import UIKit
     }
     
     private func placeholderFontFromFont(font: UIFont) -> UIFont! {
-        let smallerFont = UIFont(name: font.fontName, size: font.pointSize * placeholderFontScale)
+        let fontSize: CGFloat = (self.isFirstResponder()) ? 13.0 : 17.0
+        let smallerFont = UIFont(name: font.fontName, size: fontSize)
         return smallerFont
     }
     
@@ -169,6 +170,7 @@ import UIKit
         }
         placeholderLabel.frame = CGRect(x: originX, y: textRect.height/2,
             width: placeholderLabel.bounds.width, height: placeholderLabel.bounds.height)
+        placeholderLabel.font = placeholderFontFromFont(font!)
         activePlaceholderPoint = CGPoint(x: placeholderLabel.frame.origin.x, y: placeholderLabel.frame.origin.y - placeholderLabel.frame.size.height - placeholderInsets.y)
 
     }
